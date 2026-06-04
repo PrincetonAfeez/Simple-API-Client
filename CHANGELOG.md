@@ -104,6 +104,27 @@ review before initial portfolio release.
 * Author identity finalised: pyproject.toml + LICENSE now name Princeton
   Afeez; placeholder TODO removed.
 
+## [0.1.1] — 2026-06-04
+
+### Tooling and documentation
+
+* Added root **`requirements.txt`** (`-e .` plus pytest, pytest-cov, ruff).
+* **`pyproject.toml`**: version `0.1.1`, Beta classifier, Python 3.13 classifier,
+  Issues URL, coverage floor raised to **90%**, `[tool.coverage.run]` for `apiclient`.
+* **`.gitignore`**: virtualenvs, `.ruff_cache/`, `.cursor/`, OS junk, `*.log`.
+* **README**: install via `requirements.txt`, test counts, `verify_submission.py`,
+  ruff command, primary pytest workflow.
+* **CI (`.github/workflows/test.yml`)**: `pip install -r requirements.txt`;
+  pytest + ruff on Ubuntu and Windows (3.12, 3.14); `verify_submission` job;
+  unittest matrix installs editable package only.
+
+### Test expansion
+
+* Suite grew to **350+ tests** (~**96%** coverage): parser/CLI/client/pool/config/
+  transport/async/pagination/resilience exhaustive modules; submission docs
+  (`docs/SUBMISSION.md`, `demo-questions.md`, `report-outline.md`,
+  `windows-testing.md`) and `scripts/verify_submission.py`.
+
 ## Unreleased
 
 ### Third portfolio audit pass
