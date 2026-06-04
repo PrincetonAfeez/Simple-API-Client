@@ -25,8 +25,18 @@ The CLI and high-level client do not care which transport is underneath. See
 
 ## Install
 
+Requires **Python 3.11+**. Runtime dependencies are stdlib-only; dev tools come from
+`requirements.txt` or the `[dev]` extra.
+
 ```powershell
+# Runtime + CLI
 python -m pip install -e .
+
+# Or install everything (editable package + pytest, coverage, ruff):
+python -m pip install -r requirements.txt
+
+# Equivalent dev extra:
+python -m pip install -e ".[dev]"
 ```
 
 ## Demo server (not production)
@@ -228,30 +238,40 @@ repository (the template points at ``princetonafeez/simple-api-client``).
 
 ## Tests
 
-The test suite is written with `unittest` and runs unmodified under either
-runner. Standalone:
+The suite uses **`unittest`** test cases and runs under **`pytest`** (primary in
+CI) or plain `unittest` discovery. Install dev dependencies first:
 
 ```powershell
-python -m compileall src server tests
-python -c "import sys, unittest; sys.path.insert(0, 'src'); suite=unittest.defaultTestLoader.discover('tests'); result=unittest.TextTestRunner(verbosity=2).run(suite); raise SystemExit(0 if result.wasSuccessful() else 1)"
+python -m pip install -r requirements.txt
+pytest -q
 ```
 
-Or with the optional dev extras installed:
+Pre-submission gate (compile, pytest, ruff, doc paths, CLI `--version`):
 
 ```powershell
-python -m pip install -e .[dev]
-pytest
+python scripts/verify_submission.py
 ```
 
-Coverage spans response parsing (Content-Length, chunked, trailers, 1xx skip),
-the connection pool, retries (jitter, Retry-After float/HTTP-date), auth
-redaction across all four strategies, four pagination strategies with cycle
-guards, URL encoding and userinfo rejection, raw WSGI integration, redirect
-edge cases (cross-host strip, 303 POST→GET, 307/308 preserve), the chunked
-test server, configuration round-trips (including non-profile table
-preservation), CLI helpers (timeouts, auth selection, transport validation,
-configure subcommands), async fan-out with fail-fast and cancellation safety,
-and the raw request serializer (CR/LF guard, Content-Length policy).
+Alternate **unittest** runner (no pytest required beyond `pip install -e .`):
+
+```powershell
+python -m compileall -q src server tests
+python -c "import sys, unittest; sys.path.insert(0, 'src'); r=unittest.TextTestRunner(verbosity=1).run(unittest.defaultTestLoader.discover('tests')); sys.exit(0 if r.wasSuccessful() else 1)"
+```
+
+Lint:
+
+```powershell
+ruff check src tests server
+```
+
+**Current baseline:** 350+ tests, **~96%** line coverage on `apiclient` (90%
+minimum enforced in `pyproject.toml`). Coverage includes response parsing
+(Content-Length, chunked, trailers, 1xx skip), connection pool lifecycle,
+retries, auth redaction, four pagination strategies, URL/userinfo rules, WSGI
+and chunked integration servers, CLI command handlers, async `fetch_many`,
+config TOML round-trips, and transport edge cases. See `tests/unit/` and
+`tests/integration/`; exhaustive modules are named `test_*_exhaustive.py`.
 
 ## Exit codes
 
