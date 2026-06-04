@@ -13,6 +13,11 @@ dist/
 .installed.cfg
 pip-wheel-metadata/
 
+# Virtual environments
+.venv/
+venv/
+env/
+
 # Test, coverage, and tooling caches
 .pytest_cache/
 .tox/
@@ -22,11 +27,14 @@ pip-wheel-metadata/
 htmlcov/
 coverage.xml
 *.cover
+.ruff_cache/
+.mypy_cache/
 
-# Local config that should never be committed
+# Local config and secrets (never commit)
 .apiclient.toml
 *.env
 .env
+.env.*
 
 # Capstone planning notes (local scope docs)
 api_client_capstone_plan.txt
@@ -35,8 +43,14 @@ api_client_capstone_revised_scope.txt
 
 # Editor / IDE / local agent settings
 .claude/
+.cursor/
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+
+# OS / logs
+.DS_Store
+Thumbs.db
+*.log
