@@ -1,0 +1,42 @@
+# Byte-compiled / optimized files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# Editable installs / build artefacts
+*.egg-info/
+*.egg
+build/
+dist/
+.eggs/
+.installed.cfg
+pip-wheel-metadata/
+
+# Test, coverage, and tooling caches
+.pytest_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.cover
+
+# Local config that should never be committed
+.apiclient.toml
+*.env
+.env
+
+# Capstone planning notes (local scope docs)
+api_client_capstone_plan.txt
+api_client_capstone_expanded_scope.txt
+api_client_capstone_revised_scope.txt
+
+# Editor / IDE / local agent settings
+.claude/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
