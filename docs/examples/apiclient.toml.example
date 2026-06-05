@@ -1,0 +1,25 @@
+# Copy to ~/.apiclient.toml and adjust for your environment.
+# Profile "default" is merged automatically when --profile is omitted.
+
+[profiles.default]
+base_url = "http://127.0.0.1:8000"
+transport = "raw"
+retries = 0
+retry_non_idempotent = false
+backoff_factor = 0.25
+max_redirects = 5
+preserve_auth_across_hosts = false
+no_follow_redirects = false
+fail = false
+# retry_statuses = "429,502,503,504"
+# redirect_statuses = "301,302,303,307,308"
+keep_alive = false
+pool_size = 4
+pool_idle = 30.0
+output = "pretty"
+
+[profiles.dev]
+base_url = "http://127.0.0.1:8000"
+transport = "raw"
+retries = 2
+# bearer_token = "demo-token"   # prefer CLI flags for secrets in demos
