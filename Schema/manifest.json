@@ -1,0 +1,29 @@
+{
+  "folder": "Schema",
+  "source_repository": "PrincetonAfeez/Simple-API-Client",
+  "files": [
+    "README.md",
+    "openapi.yaml",
+    "json/auth.schema.json",
+    "json/echo.schema.json",
+    "json/error.schema.json",
+    "json/flaky.schema.json",
+    "json/health.schema.json",
+    "json/item.schema.json",
+    "json/items-cursor.schema.json",
+    "json/items-offset.schema.json",
+    "json/items-page.schema.json",
+    "json/redirect.schema.json",
+    "json/reset-flaky.schema.json"
+  ],
+  "endpoints": [
+    "GET /health",
+    "GET /private",
+    "GET /items",
+    "GET /items/{id}",
+    "GET /flaky",
+    "GET /redirect",
+    "POST /echo",
+    "GET /reset-flaky"
+  ]
+}

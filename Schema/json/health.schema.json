@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/simple-api-client/schema/health.schema.json",
+  "title": "HealthResponse",
+  "type": "object",
+  "required": [
+    "status",
+    "server",
+    "method"
+  ],
+  "properties": {
+    "status": {
+      "type": "string",
+      "const": "ok"
+    },
+    "server": {
+      "type": "string",
+      "const": "raw-wsgi"
+    },
+    "method": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/simple-api-client/schema/items-page.schema.json",
+  "title": "ItemsPageResponse",
+  "type": "object",
+  "required": [
+    "results",
+    "page",
+    "next_page"
+  ],
+  "properties": {
+    "results": {
+      "type": "array",
+      "items": {
+        "$ref": "item.schema.json"
+      }
+    },
+    "page": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "next_page": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

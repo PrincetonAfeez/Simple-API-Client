@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/simple-api-client/schema/redirect.schema.json",
+  "title": "RedirectResponse",
+  "type": "object",
+  "required": [
+    "redirect"
+  ],
+  "properties": {
+    "redirect": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

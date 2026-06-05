@@ -1,0 +1,461 @@
+openapi: 3.1.0
+info:
+  title: Simple API Client Demo API
+  version: 0.1.0
+  description: >
+    Lightweight contract for the educational WSGI demo server included with
+    Simple API Client. The server exists for local HTTP, auth, redirect, retry,
+    pagination, and WSGI experiments.
+servers:
+  - url: http://127.0.0.1:8000
+    description: Local demo server
+security: []
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: Demo server is reachable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+  /private:
+    get:
+      summary: Protected demo endpoint
+      security:
+        - BearerAuth: []
+        - BasicAuth: []
+        - ApiKeyHeader: []
+        - ApiKeyQuery: []
+      parameters:
+        - name: api_key
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Demo API key query parameter. Use `demo-key` locally.
+      responses:
+        '200':
+          description: Authentication succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthSuccessResponse'
+        '401':
+          description: Missing or invalid credentials.
+          headers:
+            WWW-Authenticate:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthFailureResponse'
+  /items:
+    get:
+      summary: List demo items
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 25
+            minimum: 0
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+        - name: per_page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+        - name: pagination
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [cursor, link]
+        - name: link
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: ['true', 'false']
+      responses:
+        '200':
+          description: Items returned using offset, page, cursor, or Link-header pagination.
+          headers:
+            Link:
+              required: false
+              schema:
+                type: string
+              description: Present when Link-header pagination is requested and another page exists.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ItemsOffsetResponse'
+                  - $ref: '#/components/schemas/ItemsPageResponse'
+                  - $ref: '#/components/schemas/ItemsCursorResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /items/{id}:
+    get:
+      summary: Get one demo item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Item found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /flaky:
+    get:
+      summary: Simulate transient failures for retry exercises
+      parameters:
+        - name: key
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Counter key. Defaults to REMOTE_ADDR.
+        - name: succeed_after
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 2
+            minimum: 1
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 503
+        - name: retry_after
+          in: query
+          required: false
+          schema:
+            type: string
+            default: '0'
+      responses:
+        '200':
+          description: The configured attempt threshold has been reached.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlakySuccessResponse'
+        '429':
+          $ref: '#/components/responses/RetryableFailure'
+        '502':
+          $ref: '#/components/responses/RetryableFailure'
+        '503':
+          $ref: '#/components/responses/RetryableFailure'
+        '504':
+          $ref: '#/components/responses/RetryableFailure'
+  /redirect:
+    get:
+      summary: Return a configurable redirect response
+      parameters:
+        - name: to
+          in: query
+          required: false
+          schema:
+            type: string
+            default: /health
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 302
+            enum: [301, 302, 303, 307, 308]
+      responses:
+        '301':
+          $ref: '#/components/responses/Redirect'
+        '302':
+          $ref: '#/components/responses/Redirect'
+        '303':
+          $ref: '#/components/responses/Redirect'
+        '307':
+          $ref: '#/components/responses/Redirect'
+        '308':
+          $ref: '#/components/responses/Redirect'
+  /echo:
+    post:
+      summary: Echo method, path, query, headers, and body
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: true
+          text/plain:
+            schema:
+              type: string
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: Echo payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EchoResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /reset-flaky:
+    get:
+      summary: Reset the in-memory flaky endpoint counters
+      responses:
+        '200':
+          description: Counter state reset.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResetFlakyResponse'
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: demo-token
+    BasicAuth:
+      type: http
+      scheme: basic
+    ApiKeyHeader:
+      type: apiKey
+      in: header
+      name: X-API-Key
+    ApiKeyQuery:
+      type: apiKey
+      in: query
+      name: api_key
+  responses:
+    BadRequest:
+      description: Invalid request input.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    RetryableFailure:
+      description: Simulated retryable failure before the success threshold is reached.
+      headers:
+        Retry-After:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FlakyFailureResponse'
+    Redirect:
+      description: Redirect response.
+      headers:
+        Location:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RedirectResponse'
+  schemas:
+    HealthResponse:
+      type: object
+      required: [status, server, method]
+      properties:
+        status:
+          type: string
+          const: ok
+        server:
+          type: string
+          const: raw-wsgi
+        method:
+          type: string
+      additionalProperties: false
+    AuthSuccessResponse:
+      type: object
+      required: [authenticated]
+      properties:
+        authenticated:
+          type: boolean
+          const: true
+      additionalProperties: false
+    AuthFailureResponse:
+      type: object
+      required: [authenticated, error]
+      properties:
+        authenticated:
+          type: boolean
+          const: false
+        error:
+          type: string
+      additionalProperties: false
+    Item:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: integer
+          minimum: 1
+        name:
+          type: string
+          pattern: '^item-[0-9]+$'
+      additionalProperties: false
+    ItemsOffsetResponse:
+      type: object
+      required: [results, offset, limit, next_offset]
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+        offset:
+          type: integer
+          minimum: 0
+        limit:
+          type: integer
+          minimum: 0
+        next_offset:
+          oneOf:
+            - type: integer
+              minimum: 0
+            - type: 'null'
+      additionalProperties: false
+    ItemsPageResponse:
+      type: object
+      required: [results, page, next_page]
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+        page:
+          type: integer
+          minimum: 1
+        next_page:
+          oneOf:
+            - type: integer
+              minimum: 1
+            - type: 'null'
+      additionalProperties: false
+    ItemsCursorResponse:
+      type: object
+      required: [results, next_cursor]
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+        next_cursor:
+          oneOf:
+            - type: string
+            - type: 'null'
+      additionalProperties: false
+    FlakyFailureResponse:
+      type: object
+      required: [ok, attempt, succeed_after]
+      properties:
+        ok:
+          type: boolean
+          const: false
+        attempt:
+          type: integer
+          minimum: 1
+        succeed_after:
+          type: integer
+          minimum: 1
+      additionalProperties: false
+    FlakySuccessResponse:
+      type: object
+      required: [ok, attempt]
+      properties:
+        ok:
+          type: boolean
+          const: true
+        attempt:
+          type: integer
+          minimum: 1
+      additionalProperties: false
+    RedirectResponse:
+      type: object
+      required: [redirect]
+      properties:
+        redirect:
+          type: string
+      additionalProperties: false
+    EchoResponse:
+      type: object
+      required: [method, path, query, headers, body]
+      properties:
+        method:
+          type: string
+        path:
+          type: string
+        query:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+        headers:
+          type: object
+          additionalProperties:
+            type: string
+        body:
+          type: string
+      additionalProperties: false
+    ResetFlakyResponse:
+      type: object
+      required: [reset]
+      properties:
+        reset:
+          type: boolean
+          const: true
+      additionalProperties: false
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+        path:
+          type: string
+      additionalProperties: false

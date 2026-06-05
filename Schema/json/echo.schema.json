@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/simple-api-client/schema/echo.schema.json",
+  "title": "EchoResponse",
+  "type": "object",
+  "required": [
+    "method",
+    "path",
+    "query",
+    "headers",
+    "body"
+  ],
+  "properties": {
+    "method": {
+      "type": "string"
+    },
+    "path": {
+      "type": "string"
+    },
+    "query": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "headers": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "body": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

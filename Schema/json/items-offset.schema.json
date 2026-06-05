@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/simple-api-client/schema/items-offset.schema.json",
+  "title": "ItemsOffsetResponse",
+  "type": "object",
+  "required": [
+    "results",
+    "offset",
+    "limit",
+    "next_offset"
+  ],
+  "properties": {
+    "results": {
+      "type": "array",
+      "items": {
+        "$ref": "item.schema.json"
+      }
+    },
+    "offset": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "limit": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "next_offset": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

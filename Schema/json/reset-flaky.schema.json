@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/simple-api-client/schema/reset-flaky.schema.json",
+  "title": "ResetFlakyResponse",
+  "type": "object",
+  "required": [
+    "reset"
+  ],
+  "properties": {
+    "reset": {
+      "type": "boolean",
+      "const": true
+    }
+  },
+  "additionalProperties": false
+}

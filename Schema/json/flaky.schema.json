@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/simple-api-client/schema/flaky.schema.json",
+  "title": "FlakyResponse",
+  "oneOf": [
+    {
+      "type": "object",
+      "required": [
+        "ok",
+        "attempt",
+        "succeed_after"
+      ],
+      "properties": {
+        "ok": {
+          "type": "boolean",
+          "const": false
+        },
+        "attempt": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "succeed_after": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "ok",
+        "attempt"
+      ],
+      "properties": {
+        "ok": {
+          "type": "boolean",
+          "const": true
+        },
+        "attempt": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  ]
+}

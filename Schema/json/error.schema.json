@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/simple-api-client/schema/error.schema.json",
+  "title": "ErrorResponse",
+  "type": "object",
+  "required": [
+    "error"
+  ],
+  "properties": {
+    "error": {
+      "type": "string"
+    },
+    "path": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

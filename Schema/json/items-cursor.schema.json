@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/simple-api-client/schema/items-cursor.schema.json",
+  "title": "ItemsCursorResponse",
+  "type": "object",
+  "required": [
+    "results",
+    "next_cursor"
+  ],
+  "properties": {
+    "results": {
+      "type": "array",
+      "items": {
+        "$ref": "item.schema.json"
+      }
+    },
+    "next_cursor": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "additionalProperties": false
+}
