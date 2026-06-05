@@ -15,12 +15,15 @@ python scripts/verify_submission.py
 Or manually:
 
 ```powershell
-python -m pip install -e ".[dev]"
+python -m pip install -r requirements.lock
+python -m pip install -e .
 pytest -q
 ruff check src tests server
 python -m compileall -q src server tests
 apiclient --version
 ```
+
+For a flexible (non-pinned) install, `python -m pip install -e ".[dev]"` is equivalent.
 
 ## Pre-submission gate (all required)
 

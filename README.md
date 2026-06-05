@@ -26,7 +26,7 @@ The CLI and high-level client do not care which transport is underneath. See
 ## Install
 
 Requires **Python 3.11+**. Runtime dependencies are stdlib-only; dev tools come from
-`requirements.txt` or the `[dev]` extra.
+`requirements.txt`, `requirements.lock`, or the `[dev]` extra.
 
 ```powershell
 # Runtime + CLI
@@ -37,6 +37,16 @@ python -m pip install -r requirements.txt
 
 # Equivalent dev extra:
 python -m pip install -e ".[dev]"
+
+# Reproducible dev/CI install (pinned transitive versions):
+python -m pip install -r requirements.lock
+python -m pip install -e .
+```
+
+Regenerate `requirements.lock` after changing dev dependencies in `pyproject.toml`:
+
+```powershell
+python -m piptools compile pyproject.toml --extra dev -o requirements.lock
 ```
 
 ## Demo server (not production)

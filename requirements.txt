@@ -1,6 +1,9 @@
 # Simple API Client — install from repo root:
 #   pip install -r requirements.txt
 #
+# For exact, reproducible dev/CI installs, use requirements.lock instead:
+#   pip install -r requirements.lock && pip install -e .
+#
 # Runtime: Python 3.11+ standard library only (no third-party packages).
 # Editable install registers the `apiclient` CLI.
 
